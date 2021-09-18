@@ -1,4 +1,4 @@
-addpath('moduls and functions/');
+addpath('functions/');
 %% Example for Brownian Motion
 clear
 option.filename = 'BM01';
