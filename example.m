@@ -26,13 +26,15 @@ FFT_model = processing(intensity,option) %it takes around 2 mins
 GP_model = analysis(FFT_model)
 
 %% Example for imported Sqt, dt and q
+%% Some previous data were already fourier transformed
+%% Data for an O-U process with drift
 clear 
-Sqt = dlmread('../data/test48_Dqt.csv'); 
+Sqt = dlmread('data/test48_Dqt.csv'); 
 Sqt(1,:) = []; 
-dt = dlmread('../data/test48_t.csv');
-q = dlmread('../data/test48_q.csv');
+dt = dlmread('data/test48_t.csv');
+q = dlmread('data/test48_q.csv');
 q(1)=[];
-I_o_q_2 = dlmread('../data/test48_I_o_q_2.csv'); 
+I_o_q_2 = dlmread('data/test48_I_o_q_2.csv'); 
 ndt = length(dt):-1:1;
 option.Sqt = Sqt;
 option.dt = dt;
