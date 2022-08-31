@@ -1,6 +1,6 @@
 # DDM-UQ
 Software package for differential dynamic microscopy with uncertainty quantification
-MATLAB version 0.5.2
+MATLAB version 0.5.3
 
 Description:
 This package is the application of DDM-UQ method (uncertainty quantification in differential dynamic microscopy). It allows 2-D particle movement simulation; and fully automated and high-throughput estimation and analysis of image structure function, intermediate scattering function and mean squared displacement (MSD) using Gaussian process regression. 
