@@ -14,19 +14,21 @@ GP_model = analysis(FFT_model) %based on Gaussian process regression
 
 %% Example for experimental images
 clear 
-% Loading data and (Note: change path for your tiff file)
-tiff_info = imfinfo('../data/30wt_30x_1.tif'); 
+% Loading data and (Note: this real data is not provided within the package 
+% due to size limit; Make sure your own tiff file is in gray scale.)
+tiff_info = imfinfo('../expermential_data/30wt_30x_1.tif'); 
 for k = 1:length(tiff_info)
-    intensity(:,:,k) = double(imread('../data/30wt_30x_1.tif', k));
+    intensity(:,:,k) = double(imread('../expermential_data/30wt_30x_1.tif', k));
 end
 % giving parameter values of minimum lag time and pixel size 
 option.mindt = 1/10;  %lag time
 option.pxsz = 0.09697; %pixel size
 FFT_model = processing(intensity,option) %it takes around 2 mins
+FFT_model.MSD_truth = 5.38.*FFT_model.dt; %reference MSD
 GP_model = analysis(FFT_model)
 
 %% Example for imported Sqt, dt and q
-%% Some previous data were already fourier transformed
+%% Some previous data that were already fourier transformed
 %% Data for an O-U process with drift
 clear 
 Sqt = dlmread('data/test48_Dqt.csv'); 

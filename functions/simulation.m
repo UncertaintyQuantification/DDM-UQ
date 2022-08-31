@@ -18,8 +18,9 @@
 %      default value is 480 (480*480 pixels).
 %	len- number of time steps, default value is 1000.
 %	SP- type of stochastic process used for simulation, default is 'BM'
-%	    (Brownian motion/simple diffusion), another option is 'OU'
-%       (Ornstein–Uhlenbeck process).
+%	    (Brownian motion/simple diffusion), other options are 'OU'
+%       (Ornstein–Uhlenbeck process) and 'OU2' (Ornstein–Uhlenbeck process 
+%       saved every 2 time steps).
 %	step- distance moved per timestep = sqrt(2D*timestep), default value
 %         is 2.
 %	drift- option for adding a drift, has value in {0,1}, 1- with a drift, 
@@ -79,7 +80,7 @@
 % clear
 % option.SP = 'BM';
 % option.drift = 1;
-% option.step = .56;
+% option.step = 0.56;
 % option.mu = 0.1;
 % sim_model = simulation(option)
 
@@ -92,7 +93,13 @@
 % option.samepos = 1;
 % sim_model = simulation(option)
 
-% %Example 4: O-U process with a drift 
+% %Example 4: O-U process without drift 
+% clear
+% option.SP = 'OU';
+% option.step = 5;  % If don't set up step, default step is 2
+% sim_model = simulation(option)
+
+% %Example 5: O-U process with a drift 
 % clear
 % option.SP = 'OU';
 % option.drift = 1;
@@ -101,9 +108,9 @@
 % option.rho = 0.95;
 % sim_model = simulation(option)
 
-% %Example 5: O-U process with drifts distinct to each particle  
+% %Example 6: O-U process with drifts distinct to each particle  
 % clear
-% option.SP = 'OU';
+% option.SP = 'OU2';
 % option.noise = 'Gaussian'; 
 % option.drift = 1;
 % option.drift_dir = 1;
@@ -183,6 +190,8 @@ if(model.drift==1)
     else
         model.drift_dir = params.drift_dir;
     end
+else
+    model.drift_dir = 0;
 end
 
 if(model.drift==1)
@@ -195,7 +204,7 @@ elseif(model.drift==0)
     model.mu = 0;
 end
 
-if(strcmp(model.SP,'OU'))
+if(strcmp(model.SP,'OU')|| strcmp(model.SP,'OU2'))
     if(~isfield(params,'rho'))
         model.rho = 0.95;
     else
@@ -204,7 +213,7 @@ if(strcmp(model.SP,'OU'))
 end
 
 if(~isfield(params,'samepos'))
-    model.samepos=0;
+    model.samepos = 0;
 else
     model.samepos = params.samepos;
 end
@@ -296,6 +305,8 @@ end
 if(strcmp(model.SP,'BM'))
     model.pos = diffusion_with_drift(model.len,model.step,model.pos0,model.N,model.mu); %pos is an array with dim=N*len*2
 elseif(strcmp(model.SP,'OU'))
+    model.pos =  OU_diff_drift(model.len,model.N,model.pos0,model.drift_dir,model.step,model.rho,model.mu);
+elseif(strcmp(model.SP,'OU2'))
     model.pos =  OU_diff_drift_every_2_time_points(model.len,model.N,model.pos0,model.drift_dir,model.step,model.rho,model.mu);
 end
 
