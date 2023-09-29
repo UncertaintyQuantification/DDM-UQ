@@ -1,6 +1,6 @@
 # DDM-UQ
 Software package for differential dynamic microscopy with uncertainty quantification
-MATLAB version 0.5.3
+MATLAB version 0.5.4
 
 Description:
 
