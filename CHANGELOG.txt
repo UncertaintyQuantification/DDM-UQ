@@ -1,3 +1,6 @@
+##change / DDM-UQ 0.5.4
+ *Fix a bug for image crop with odd frame size 
+ *Add a reminder for user to try methodQ=1 (a new q selecting method), when the default one doesn't have enough q accepted
 ##change / DDM-UQ 0.5.3
  *Change the default OU process (with drift) to the version that updates every one time step
  *Fix a bug of parameter setting when simulating OU process without drift
@@ -6,7 +9,7 @@
  *Fix a bug of index_dt_selected can be non-inetger in processing module and analysis module
  *Fix a bug of selecting maximum q allowed (q_max_num) in analysis module 
  *Add the lower bound in kernel parameters optimization in analysis module 
- *Add a new q selecting method in analysis module, controled by methodQ=1
+ *Add a new q selecting method in analysis module, controlled by methodQ=1
  *Implement bias detection plot in analysis module 
  *Change y-limit for "mean squared displacement" plot in analysis module
  *Change setting for used q in subplot 2 and 3 in analysis module ('predicted MSD vs dt' plot and 'fqt/ISF vs dt' plot for each selected q)  
