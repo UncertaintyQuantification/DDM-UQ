@@ -133,7 +133,6 @@ if rem(min(model.nx, model.ny),2)==0
 else
     model.sz = min(model.nx, model.ny);
 end
-edge = floor(abs(model.nx-model.ny)/2);
 mid = ceil((model.sz -1)/2)+1; 
 exclude = 0;
 
@@ -193,7 +192,7 @@ for k = model.index_dt_selected
         fprintf('Fourier transformation: %d percent \n', round(curr*100,2));
     end
     for j=1:model.ndt(k)
-        imdf = I(1:model.sz,edge+1:end-edge-1, (j + k)) - I(1:model.sz,edge+1:end-edge-1, j);
+        imdf = I(1:model.sz,1:model.sz, (j + k)) - I(1:model.sz,1:model.sz, j);
         ft = fft2(imdf); %fourier transform of the difference of two images
         absft = abs(ft).^2/model.sz^2; %normalized S(qx, qy, dt) 
         avg = avg+fftshift(absft); %fftshift shifts 

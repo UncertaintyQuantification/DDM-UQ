@@ -387,48 +387,54 @@ if model.methodQ==0
     q_selected_index = find(model.index_cut>0);
     num_q_min = 10;
     index_t_cut = sort(model.index_cut(q_selected_index),'descend');
-    index_t_cut = index_t_cut(num_q_min);
-    index_t_truncate = find(model.index_cut(q_selected_index)>index_t_cut);
-    model.index_cut(q_selected_index(index_t_truncate)) = index_t_cut;
+    
+    % Sep 2023
+    if length(index_t_cut)<num_q_min
+         error('Accepted q is not enough, retry with "FFT_model.methodQ=1;"');
+    else 
+        index_t_cut = index_t_cut(num_q_min);
+        index_t_truncate = find(model.index_cut(q_selected_index)>index_t_cut);
+        model.index_cut(q_selected_index(index_t_truncate)) = index_t_cut;
 
-    M_sample = 1000;
-    model.pred_MSD_sample = NaN(1,max(model.index_cut));
-    model.lower95_MSD_sample = NaN(1,max(model.index_cut));
-    model.upper95_MSD_sample = NaN(1,max(model.index_cut));
-    median_MSD_record = NaN(num_testing1,num_testing2);
-    model.t_Cut = length(model.pred_MSD_sample);
-    for i = 1:max(model.index_cut)
-        q_index_available = find(model.index_cut>=i);
-        MSD_sample_record = NaN(length(q_index_available),M_sample);
-        var_record = NaN(1,length(q_index_available));
-        index_here = 0;
-        for j = 1:length(q_index_available)
-            sample_dqt = exp(predmean(q_index_available(j),i)+sqrt(pred_var(q_index_available(j),i)).*normrnd(0,1,1,M_sample));
-            index_here = index_here+1;
-            index_sample_selected = find((model.A_hat(q_index_available(j))-sample_dqt+model.B_hat) > 0);
-            MSD_sample_record(index_here,index_sample_selected) = (4 ./ (q(q_index_available(j)).^2)) .* log(model.A_hat(q_index_available(j))./(model.A_hat(q_index_available(j))-sample_dqt(index_sample_selected)+model.B_hat));
-            var_record(index_here) = var(MSD_sample_record(index_here,index_sample_selected));
-            median_MSD_record(q_index_available(j),i) = nanmedian(MSD_sample_record(index_here,index_sample_selected),'all');
-        end
-        MSD_sample_record_reshape = reshape(MSD_sample_record,[1,size(MSD_sample_record,1)*size(MSD_sample_record,2)]);
-        quantile_here = quantile(rmmissing(MSD_sample_record_reshape),[0.025,0.975]);
-        model.lower95_MSD_sample(i) = quantile_here(1);
-        model.upper95_MSD_sample(i)  = quantile_here(2);
-        model.pred_MSD_sample(i)  = nanmedian(MSD_sample_record,'all'); 
-        if i>5
-            if model.upper95_MSD_sample(i)-model.lower95_MSD_sample(i)>1.5*model.pred_MSD_sample(i)
-                model.t_Cut = i;
-                break
+        M_sample = 1000;
+        model.pred_MSD_sample = NaN(1,max(model.index_cut));
+        model.lower95_MSD_sample = NaN(1,max(model.index_cut));
+        model.upper95_MSD_sample = NaN(1,max(model.index_cut));
+        median_MSD_record = NaN(num_testing1,num_testing2);
+        model.t_Cut = length(model.pred_MSD_sample);
+        for i = 1:max(model.index_cut)
+            q_index_available = find(model.index_cut>=i);
+            MSD_sample_record = NaN(length(q_index_available),M_sample);
+            var_record = NaN(1,length(q_index_available));
+            index_here = 0;
+            for j = 1:length(q_index_available)
+                sample_dqt = exp(predmean(q_index_available(j),i)+sqrt(pred_var(q_index_available(j),i)).*normrnd(0,1,1,M_sample));
+                index_here = index_here+1;
+                index_sample_selected = find((model.A_hat(q_index_available(j))-sample_dqt+model.B_hat) > 0);
+                MSD_sample_record(index_here,index_sample_selected) = (4 ./ (q(q_index_available(j)).^2)) .* log(model.A_hat(q_index_available(j))./(model.A_hat(q_index_available(j))-sample_dqt(index_sample_selected)+model.B_hat));
+                var_record(index_here) = var(MSD_sample_record(index_here,index_sample_selected));
+                median_MSD_record(q_index_available(j),i) = nanmedian(MSD_sample_record(index_here,index_sample_selected),'all');
+            end
+            MSD_sample_record_reshape = reshape(MSD_sample_record,[1,size(MSD_sample_record,1)*size(MSD_sample_record,2)]);
+            quantile_here = quantile(rmmissing(MSD_sample_record_reshape),[0.025,0.975]);
+            model.lower95_MSD_sample(i) = quantile_here(1);
+            model.upper95_MSD_sample(i)  = quantile_here(2);
+            model.pred_MSD_sample(i)  = nanmedian(MSD_sample_record,'all'); 
+            if i>5
+                if model.upper95_MSD_sample(i)-model.lower95_MSD_sample(i)>1.5*model.pred_MSD_sample(i)
+                    model.t_Cut = i;
+                    break
+                end
             end
         end
-    end
-
-    model.pred_MSD_sample = model.pred_MSD_sample(1:model.t_Cut);
-    model.pred_MSD_sample(model.pred_MSD_sample<0) = NaN;
-    model.upper95_MSD_sample = model.upper95_MSD_sample(1:model.t_Cut);
-    model.upper95_MSD_sample(model.upper95_MSD_sample<0) = NaN;
-    model.lower95_MSD_sample = model.lower95_MSD_sample(1:model.t_Cut);
-    model.lower95_MSD_sample(model.lower95_MSD_sample<0) = NaN;
+    
+        model.pred_MSD_sample = model.pred_MSD_sample(1:model.t_Cut);
+        model.pred_MSD_sample(model.pred_MSD_sample<0) = NaN;
+        model.upper95_MSD_sample = model.upper95_MSD_sample(1:model.t_Cut);
+        model.upper95_MSD_sample(model.upper95_MSD_sample<0) = NaN;
+        model.lower95_MSD_sample = model.lower95_MSD_sample(1:model.t_Cut);
+        model.lower95_MSD_sample(model.lower95_MSD_sample<0) = NaN;
+    end     
 else
     t_end = floor((n_time-1)*2/3);
     model.selected_q_record = NaN(length(q_ori),t_end);
