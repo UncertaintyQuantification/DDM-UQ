@@ -12,15 +12,15 @@ Gu, M., Luo, Y., He, Y., Helgeson, M. E., & Valentine, M. T. (2021). Uncertainty
 
 Installation:
 
-To use this package, please make sure you have installed the optimization toolbox in MATLAB.
+To use this package, please install (1) the Optimization Toolbox and (2) the Statistics and Machine Learning Toolbox in MATLAB.
 
 Contents:
 
-DDM-UQ.html - documentation file with description, result of some examples and syntax. 
-example.m - demonstration examples.
-simulation.m - simulation module, allow user simulates 2-D particle movement.
-processing.m - processing module, process Fourier transformation for intensity profiles.
-analysis.m - analysis module, robustly estimate the image structure function, mean squared displacement and other quantities of interest. 
+DDM-UQ.html - example file with description. 
+example.m - illustrative examples.
+simulation.m - simulation module, allows user to simulate 2-D particle movement.
+processing.m - processing module, processes Fourier transformation for intensity profiles.
+analysis.m - analysis module, robustly estimates the image structure function, mean squared displacement and other quantities of interest. 
 ...(other functions: kernel and log likelihood)
 
 Authors:
